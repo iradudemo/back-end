@@ -37,10 +37,7 @@ exports.createTransaction = asyncHandler(async (req, res, next) => {
   // }
 });
 exports.getTransaction = asyncHandler(async (req, res, next) => {
-  const transactions = await Transactions.find().populate({
-    path: "task",
-    select: "taskTitle taskDescription",
-  });
+  const transactions = await Transactions.find();
   res.status(200).json({
     count: transactions.length,
     msg: "fetched transaction",
