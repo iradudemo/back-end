@@ -7,10 +7,10 @@ const TransactionScheme = mongoose.Schema(
       unique: true,
       required: [true, "Transaction Id is required"],
     },
-    task: {
+    groupId: {
       type: mongoose.Schema.ObjectId,
-      ref: "Task",
-      required: [true, "please specify the task "],
+      ref: "groups",
+      required: [true, "please specify the group "],
     },
 
     amount: {

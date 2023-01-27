@@ -12,6 +12,8 @@ const groupsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    target: { type: Number, required: true },
+    targetReached: { type: Number, required: true, default: 0 },
   },
   { timestamps: true }
 );

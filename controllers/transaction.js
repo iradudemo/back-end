@@ -3,6 +3,7 @@ const asyncHandler = require("../middleware/async");
 const Callback = require("../models/Callback");
 const Task = require("../models/Task");
 const Transactions = require("../models/Transactions");
+const Groups = require("../models/groups");
 
 exports.createTransaction = asyncHandler(async (req, res, next) => {
   const {
@@ -12,28 +13,28 @@ exports.createTransaction = asyncHandler(async (req, res, next) => {
     senderName,
     telephoneNumber,
     address,
-    task,
+    groupId,
   } = req.body;
-  const contribution = await Task.findOne({ _id: task });
-  if (contribution) {
-    await Transactions.create({
-      transactionId,
-      task: contribution._id,
-      amount,
-      transactionStatus,
-      senderName,
-      telephoneNumber,
-      address,
+  // const contribution = await Task.findOne({ _id: task });
+  // if (contribution) {
+  await Transactions.create({
+    transactionId,
+    groupId,
+    amount,
+    transactionStatus,
+    senderName,
+    telephoneNumber,
+    address,
+  })
+    .then(async (resp) => {
+      res.status(200).json({ success: true, data: resp });
     })
-      .then(async (resp) => {
-        res.status(200).json({ success: true, data: resp });
-      })
-      .catch((e) => {
-        res.status(500).json({ msg: "failed to make transaction!!", error: e });
-      });
-  } else {
-    res.status(400).json({ msg: "transaction fail task not found!!!" });
-  }
+    .catch((e) => {
+      res.status(500).json({ msg: "failed to make transaction!!", error: e });
+    });
+  // } else {
+  //   res.status(400).json({ msg: "transaction fail task not found!!!" });
+  // }
 });
 exports.getTransaction = asyncHandler(async (req, res, next) => {
   const transactions = await Transactions.find().populate({
@@ -125,7 +126,16 @@ exports.createCallback = asyncHandler(async (req, res, next) => {
   const transaction = await Transactions.findOne({
     transactionId: req.body.transactionId,
   });
-  const taskId = transaction.task;
+  if (!transaction) {
+    return next(
+      new ErrorResponse(
+        `transaction with id: ${req.params.txid} not found`,
+        404
+      )
+    );
+  }
+  // const taskId = transaction.task;
+  const groupId = transaction.groupId;
 
   if (status == "SUCCESS") {
     const transaction = await Transactions.findOneAndUpdate(
@@ -137,24 +147,15 @@ exports.createCallback = asyncHandler(async (req, res, next) => {
         new: true,
       }
     );
-    const contribution = await Task.findOne({ _id: taskId });
-    console.log("old amount", contribution.balance);
-    console.log("type of model:", typeof contribution.balance);
-    console.log("type of input:", typeof amount);
-    const newAmount = amount + contribution.balance;
-    console.log("new ammount", newAmount);
-    const percent = (newAmount * 100) / contribution.maximumAmount;
-    console.log(`percent ${percent} %`);
-    await contribution.updateOne({
-      balance: newAmount,
-      currentPercent: percent,
-    });
-    if (!transaction) {
-      return next(
-        new ErrorResponse(
-          `transaction with id: ${req.params.txid} not found`,
-          404
-        )
+    const gr = await Groups.findOne({ _id: groupId });
+    if (gr) {
+      const newTargetReached =
+        Number(gr.targetReached) + Number(req.body.paidAmount);
+      await Groups.updateOne(
+        { _id: groupId },
+        {
+          targetReached: newTargetReached,
+        }
       );
     }
   }
@@ -168,14 +169,6 @@ exports.createCallback = asyncHandler(async (req, res, next) => {
         new: true,
       }
     );
-    if (!transaction) {
-      return next(
-        new ErrorResponse(
-          `transaction with id: ${req.body.transactionId} not found`,
-          404
-        )
-      );
-    }
   }
   if (status !== "SUCCESS") {
     return next(
