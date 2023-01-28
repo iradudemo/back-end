@@ -184,7 +184,9 @@ exports.createCallback = asyncHandler(async (req, res, next) => {
 
 exports.displayCallback = asyncHandler(async (req, res, next) => {
   const callback = await Callback.find();
-  res.status(200).json({ msg: "retrived data", data: callback });
+  res
+    .status(200)
+    .json({ msg: "retrived data", count: callback.length, data: callback });
 });
 
 exports.withdraw = asyncHandler(async (req, res, next) => {
