@@ -19,10 +19,15 @@ const UserSchema = new mongoose.Schema(
       max: 50,
       unique: true,
     },
+    telephoneNumber: {
+      type: String,
+      minlength: 10,
+      // required: true,
+    },
     password: {
       type: String,
       required: true,
-      min: 6,
+      minlength: 6,
     },
     profilePicture: {
       type: String,
@@ -49,22 +54,6 @@ const UserSchema = new mongoose.Schema(
       default: "user",
       required: true,
     },
-    // desc: {
-    //   type: String,
-    //   max: 50,
-    // },
-    // city: {
-    //   type: String,
-    //   max: 50,
-    // },
-    // from: {
-    //   type: String,
-    //   max: 50,
-    // },
-    // relationship: {
-    //   type: Number,
-    //   enum: [1, 2, 3],
-    // },
   },
   { timestamps: true }
 );

@@ -6,10 +6,10 @@ const {
   displayCallback,
   withdraw,
 } = require("../controllers/transaction");
-
+const auth = require("../middleware/auth");
 const router = require("express").Router();
 
-router.route("/").get(getTransaction).post(createTransaction);
+router.route("/").get(auth, getTransaction).post(auth, createTransaction);
 router.route("/task/:taskId").get(getTransactionsPerTask);
 router.route("/callback/payment/:transactionId").post(createCallback);
 router.route("/callback").get(displayCallback);

@@ -37,7 +37,10 @@ exports.createTransaction = asyncHandler(async (req, res, next) => {
   // }
 });
 exports.getTransaction = asyncHandler(async (req, res, next) => {
-  const transactions = await Transactions.find();
+  const transactions = await Transactions.find().populate({
+    path: "groupId",
+    select: "groupName description",
+  });
   res.status(200).json({
     count: transactions.length,
     msg: "fetched transaction",

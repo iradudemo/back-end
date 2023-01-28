@@ -1,6 +1,22 @@
 const User = require("../models/Users");
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+const asyncHandler = require("../middleware/async");
+const Users = require("../models/Users");
+const ErrorResponse = require("../helpers/errorResponse");
+
+// get all users
+router.get(
+  "/all",
+  asyncHandler(async (req, res, next) => {
+    const users = await Users.find();
+    if (users) {
+      res.status(200).json({ msg: "fetched users", data: users });
+    } else {
+      return next(new ErrorResponse("No registered users", 400));
+    }
+  })
+);
 
 // get a user
 router.get("/", async (req, res) => {
