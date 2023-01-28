@@ -40,7 +40,7 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+
 app.use(express.json()); //bodyParser allow post request
 app.use(helmet());
 app.use(morgan("dev"));
