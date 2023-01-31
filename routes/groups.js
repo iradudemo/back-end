@@ -67,4 +67,20 @@ router.delete("/:groupId", auth, async (req, res, next) => {
     msg: `A group with id of ${req.params.groupId} is successfully deleted`,
   });
 });
+router.put("/:groupId", async (req, res, next) => {
+  const group = await Groups.findByIdAndUpdate(req.params.groupId, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!group) {
+    return next(
+      new ErrorResponse(`group with an id: ${req.params.taskId} not found`, 404)
+    );
+  }
+  res.status(200).json({
+    success: true,
+    msg: `A group with id of ${req.params.taskId} is Successfully updated`,
+    group,
+  });
+});
 module.exports = router;
