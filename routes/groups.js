@@ -50,5 +50,21 @@ router.post("/", auth, async (req, res, next) => {
   const newgroup = Groups.create({ groupName, description, target });
   res.status(201).json({ msg: "group created", data: newgroup });
 });
+router.delete("/:groupId", auth, async (req, res, next) => {
+  const group = await Groups.findByIdAndDelete(req.params.groupId);
+  if (!group) {
+    return next(
+      new ErrorResponse(
+        `Group with an id: ${req.params.groupId} not found`,
+        404
+      )
+    );
+  }
 
+  group.remove();
+  res.status(200).json({
+    success: true,
+    msg: `A group with id of ${req.params.groupId} is successfully deleted`,
+  });
+});
 module.exports = router;
