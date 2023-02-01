@@ -12,7 +12,7 @@ const errorHandler = (error, req, res, next) => {
   if (error.code === 11000) {
     const message = `${Object.keys(error.keyPattern)[0]} ${
       Object.values(error.keyValue)[0]
-    } is Already Exist`;
+    } is already exist!`;
 
     err = new ErrorResponse(message, 400);
   }

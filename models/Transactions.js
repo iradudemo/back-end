@@ -12,6 +12,10 @@ const TransactionScheme = mongoose.Schema(
       ref: "groups",
       required: [true, "please specify the group "],
     },
+    userId: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Users",
+    },
 
     amount: {
       type: Number,

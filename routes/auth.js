@@ -2,26 +2,29 @@ const router = require("express").Router();
 const User = require("../models/Users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("../middleware/async");
 
 // register
-router.post("/register", async (req, res) => {
-  try {
+router.post(
+  "/register",
+  asyncHandler(async (req, res, next) => {
     // generate hashed password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     // create a new user
     const newUser = await User.create({
+      fullName: req.body.fullName,
+      telephoneNumber: req.body.telephoneNumber,
+      gender: req.body.gender,
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
 
     res.status(200).json({ user: newUser });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
+  })
+);
 
 // LOGIN
 router.post("/login", async (req, res) => {
@@ -47,6 +50,8 @@ router.post("/login", async (req, res) => {
         username: user.username,
         fullName: user.fullName,
         profilePicture: user.profilePicture,
+        telephone: user.telephoneNumber,
+        gender: user.gender,
       },
       process.env.TOKEN_KEY,
       {
@@ -59,6 +64,8 @@ router.post("/login", async (req, res) => {
       id: user._id,
       email: user.email,
       fullName: user.fullName,
+      telephone: user.telephoneNumber,
+      gender: user.gender,
       role: user.role,
       token,
       username: user.username,

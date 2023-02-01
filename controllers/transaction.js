@@ -20,6 +20,7 @@ exports.createTransaction = asyncHandler(async (req, res, next) => {
   await Transactions.create({
     transactionId,
     groupId,
+    userId: req.user._id,
     amount,
     transactionStatus,
     senderName,

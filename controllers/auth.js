@@ -6,12 +6,16 @@ const Users = require("../models/Users");
 
 // register
 exports.userRegister = asyncHandler(async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { fullName, username, email, telephoneNumber, gender, password } =
+    req.body;
 
   // create user
   const user = await Users.create({
+    fullName,
     username,
     email,
+    telephoneNumber,
+    gender,
     password,
   });
   // create TOKEN
