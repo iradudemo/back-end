@@ -112,17 +112,17 @@ router.put(
 );
 
 router.put(
-  "updatePassword/:id",
+  "/updatePassword/:id",
   auth,
   asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user._id).select("+password");
 
     // Check current password
     if (!(await user.matchPassword(req.body.currentPassword))) {
-      return next(new ErrorResponse("Password is incorrect", 400));
+      return next(new ErrorResponse("Incorrect Current password", 400));
     }
-
-    user.password = req.body.newPassword;
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.newPassword, salt);
     await user.save();
 
     res.status(200).json({ msg: "Password Updated!!" });
