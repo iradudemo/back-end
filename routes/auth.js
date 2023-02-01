@@ -3,6 +3,7 @@ const User = require("../models/Users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("../middleware/async");
+const auth = require("../middleware/auth");
 
 // register
 router.post(
@@ -82,4 +83,48 @@ router.post("/login", async (req, res) => {
     return res.status(500).json(error);
   }
 });
+
+router.put(
+  "/userDetaails/:id",
+  auth,
+  asyncHandler(async (req, res, next) => {
+    const fieldsToUpdate = {
+      fullName: req.body.fullName,
+      username: req.body.username,
+      email: req.body.email,
+      telephoneNumber: req.body.telephoneNumber,
+      gender: req.body.gender,
+      address: req.body.address,
+    };
+
+    const user = await User.findByIdAndUpdate(req.user._id, fieldsToUpdate, {
+      new: true,
+      runValidators: true,
+    });
+    console.log("req.user", req.user);
+
+    res.status(200).json({
+      message: "success",
+      data: user,
+    });
+  })
+);
+
+router.put(
+  "/:userId",
+  asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user._id).select("+password");
+
+    // Check current password
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return next(new ErrorResponse("Password is incorrect", 400));
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
+  })
+);
+
 module.exports = router;

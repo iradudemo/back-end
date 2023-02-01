@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const app = express();
 const bodyParser = require("body-parser");
 
@@ -34,10 +35,10 @@ const task = require("./routes/task");
 const errorHandler = require("./middleware/error");
 
 dotenv.config();
-
 DbConnection();
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
+app.use(cookieParser());
 // Middleware
 app.use(cors());
 
