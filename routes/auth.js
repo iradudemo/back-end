@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("../middleware/async");
 const auth = require("../middleware/auth");
+const ErrorResponse = require("../helpers/errorResponse");
 
 // register
 router.post(
@@ -111,7 +112,8 @@ router.put(
 );
 
 router.put(
-  "/:userId",
+  "updatePassword/:id",
+  auth,
   asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user._id).select("+password");
 
@@ -123,7 +125,7 @@ router.put(
     user.password = req.body.newPassword;
     await user.save();
 
-    sendTokenResponse(user, 200, res);
+    res.status(200).json({ msg: "Password Updated!!" });
   })
 );
 
