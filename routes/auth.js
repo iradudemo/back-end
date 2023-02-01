@@ -19,6 +19,7 @@ router.post(
       gender: req.body.gender,
       username: req.body.username,
       email: req.body.email,
+      address: req.body.address,
       password: hashedPassword,
     });
 
@@ -66,6 +67,7 @@ router.post("/login", async (req, res) => {
       fullName: user.fullName,
       telephone: user.telephoneNumber,
       gender: user.gender,
+      address: user.address,
       role: user.role,
       token,
       username: user.username,
