@@ -2,10 +2,16 @@ const router = require("express").Router();
 
 const Post = require("../models/Post");
 const Users = require("../models/Users");
+const auth = require("../middleware/auth");
 
 // create a post
-router.post("/", async (req, res) => {
-  const newPost = new Post(req.body);
+router.post("/", auth, async (req, res) => {
+  const newPost = new Post({
+    userId: req.user._id,
+    title: req.body.title,
+    desc: req.body.desc,
+    image: req.body.image,
+  });
   try {
     const savedPost = await newPost.save();
     res.status(200).json({ message: "successfully posted!", savedPost });
@@ -49,12 +55,9 @@ router.get("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (post.userId === req.body.userId) {
-      await post.deleteOne();
-      res.status(200).json({ message: " post successfully deleted" });
-    } else {
-      res.status(403).json("Only owner of this post is allowed to delete it");
-    }
+
+    await post.deleteOne();
+    res.status(200).json({ message: " post successfully deleted" });
   } catch (error) {
     res.status(500).json(error);
   }
