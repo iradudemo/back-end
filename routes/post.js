@@ -11,6 +11,7 @@ router.post("/", auth, async (req, res) => {
     title: req.body.title,
     desc: req.body.desc,
     image: req.body.image,
+    type: req.body.type,
   });
   try {
     const savedPost = await newPost.save();

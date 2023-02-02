@@ -9,6 +9,7 @@ const PostSchema = new mongoose.Schema(
     title: {
       type: String,
       max: 300,
+      unique: true,
     },
     desc: {
       type: String,
@@ -17,6 +18,7 @@ const PostSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    type: String,
     likes: {
       type: Array,
       default: [],
