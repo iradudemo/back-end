@@ -31,7 +31,7 @@ const messageRouter = require("./routes/messages");
 const groupsRoute = require("./routes/groups");
 const groupParticipantsRoute = require("./routes/groupParticipants");
 const transaction = require("./routes/transactions");
-const task = require("./routes/task");
+const fixtures = require("./routes/fixtures");
 const errorHandler = require("./middleware/error");
 
 dotenv.config();
@@ -98,7 +98,7 @@ app.use("/api/messages", messageRouter);
 app.use("/api/groups", groupsRoute);
 app.use("/api/groupParticipants", groupParticipantsRoute);
 app.use("/api/transactions", transaction);
-app.use("/api/tasks", task);
+app.use("/api/fixtures", fixtures);
 app.use(errorHandler);
 PORT = process.env.PORT;
 // app.listen(PORT, console.log(`Server started at ${PORT}`));
