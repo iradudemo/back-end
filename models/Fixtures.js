@@ -22,6 +22,16 @@ const FixtureSchema = new mongoose.Schema(
       type: Date,
       required: [true, "Provide Date"],
     },
+    isMatchEnded: {
+      type: Boolean,
+      default: false,
+    },
+    homeResult: {
+      type: Number,
+    },
+    awayResult: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
