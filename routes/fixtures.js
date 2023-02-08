@@ -8,10 +8,10 @@ const {
 const auth = require("../middleware/auth");
 const router = require("express").Router();
 
-router.route("/").get(auth, getFixtures).post(auth, createFixtures);
+router.route("/").get(getFixtures).post(auth, createFixtures);
 router
   .route("/:id")
   .put(auth, updateFixtures)
   .delete(auth, deleteFixtures)
-  .get(auth, getSingleFixtures);
+  .get(getSingleFixtures);
 module.exports = router;
