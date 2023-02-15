@@ -5,6 +5,7 @@ const router = require("express").Router();
 const auth = require("../middleware/auth");
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../helpers/errorResponse");
+const Message = require("../models/Message");
 // get a user
 router.get("/", auth, async (req, res) => {
   try {
@@ -67,6 +68,12 @@ router.delete("/:groupId", auth, async (req, res, next) => {
   }
 
   group.remove();
+  await GroupsParticipants.deleteOne({
+    groupId: req.params["groupId"],
+  });
+  await Message.deleteOne({
+    groupId: req.params["groupId"],
+  });
   res.status(200).json({
     success: true,
     msg: `A group with id of ${req.params.groupId} is successfully deleted`,

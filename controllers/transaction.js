@@ -1,7 +1,7 @@
 const ErrorResponse = require("../helpers/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Callback = require("../models/Callback");
-const Task = require("../models/Task");
+
 const Transactions = require("../models/Transactions");
 const Groups = require("../models/groups");
 
@@ -49,17 +49,17 @@ exports.getTransaction = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.getTransactionsPerTask = asyncHandler(async (req, res, next) => {
-  const transaction = await Transactions.find({
-    task: { _id: req.params.taskId },
-  });
+// exports.getTransactionsPerTask = asyncHandler(async (req, res, next) => {
+//   const transaction = await Transactions.find({
+//     task: { _id: req.params.taskId },
+//   });
 
-  if (!transaction) {
-    return next(new ErrorResponse(`No history related with this Task`, 400));
-  }
+//   if (!transaction) {
+//     return next(new ErrorResponse(`No history related with this Task`, 400));
+//   }
 
-  res.status(200).json({ msg: "Retrived transactions", transaction });
-});
+//   res.status(200).json({ msg: "Retrived transactions", transaction });
+// });
 
 exports.paymentCallback = asyncHandler(async (req, res, next) => {
   const status = req.body.status;
@@ -190,21 +190,21 @@ exports.displayCallback = asyncHandler(async (req, res, next) => {
     .json({ msg: "retrived data", count: callback.length, data: callback });
 });
 
-exports.withdraw = asyncHandler(async (req, res, next) => {
-  const { taskId, amount } = req.body;
-  if (taskId && amount <= 0) {
-    return next(new ErrorResponse(`please enter amount you want`, 400));
-  }
-  if (amount >= 1 && taskId == "") {
-    return next(new ErrorResponse(`Please Specify task`, 400));
-  }
+// exports.withdraw = asyncHandler(async (req, res, next) => {
+//   const { taskId, amount } = req.body;
+//   if (taskId && amount <= 0) {
+//     return next(new ErrorResponse(`please enter amount you want`, 400));
+//   }
+//   if (amount >= 1 && taskId == "") {
+//     return next(new ErrorResponse(`Please Specify task`, 400));
+//   }
 
-  const task = await Task.findOne({ _id: taskId });
-  const newBalance = task.balance - amount;
-  if (newBalance < 0) {
-    return next(new ErrorResponse(`Insufficient amounts`, 400));
-  }
+//   const task = await Task.findOne({ _id: taskId });
+//   const newBalance = task.balance - amount;
+//   if (newBalance < 0) {
+//     return next(new ErrorResponse(`Insufficient amounts`, 400));
+//   }
 
-  const updateAccount = await task.updateOne({ balance: newBalance });
-  res.status(200).json({ msg: "success", balance: newBalance });
-});
+//   const updateAccount = await task.updateOne({ balance: newBalance });
+//   res.status(200).json({ msg: "success", balance: newBalance });
+// });
