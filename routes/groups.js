@@ -47,7 +47,12 @@ router.post("/", auth, async (req, res, next) => {
       new ErrorResponse("group name and description is required", 400)
     );
   }
-  const newgroup = Groups.create({ groupName, description, target });
+  const newgroup = await Groups.create({ groupName, description, target });
+  const newPart = await GroupsParticipants.create({
+    userId: req.user._id,
+    groupId: newgroup._id,
+  });
+
   res.status(201).json({ msg: "group created", data: newgroup });
 });
 router.delete("/:groupId", auth, async (req, res, next) => {
